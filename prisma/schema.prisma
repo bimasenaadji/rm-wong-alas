@@ -1,0 +1,42 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Menu {
+  id          Int      @id @default(autoincrement())
+  categoryId  Int
+  name        String
+  description String
+  price       Int
+  isAvailable Boolean  @default(true)
+  imageUrl    String
+  category    Category @relation(fields: [categoryId], references: [id])
+}
+
+model Category {
+  id    Int    @id @default(autoincrement())
+  name  String
+  menus Menu[]
+}
+
+model Reservation {
+  id             String      @id @default(uuid())
+  customerName   String
+  whatsappNumber String
+  bookingDate    DateTime    @db.Date
+  bookingTime    DateTime    @db.Time(6)
+  numberOfPeople Int
+  status         OrderStatus @default(PENDING)
+  createdAt      DateTime    @default(now())
+}
+
+enum OrderStatus {
+  PENDING
+  SUCCESS
+  CANCELED
+}
